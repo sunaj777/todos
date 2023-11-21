@@ -1,25 +1,66 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import "./App.css"
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export default function Home() {
+const[inputSearch,setInputSearch]=useState('')
+const [todos,setTodos]=useState([])
+
+const handleSave=()=>{
+  const objectTodo={
+    title:inputSearch,
+    done:false
+
+  }
+  const clone=[...todos,objectTodo]
+    setTodos(clone)
+    setInputSearch('')
+  
 }
 
-export default App;
+ const handleRemove = (index)=>{
+  const clone = [...todos]
+  clone.splice(index,1)
+  setTodos(clone)
+ }
+ const handleCheck =(index)=>{
+  const clone = [...todos]
+  clone[index].done = ! clone[index].done
+  setTodos(clone)
+ }
+const handleKeyDown=(e)=>{
+  if(e.key==="Enter"){
+    handleSave()
+  }
+}
+
+
+  return (
+    <div className="todo-container">
+   <h1 className="todo-title">My Todos</h1>
+      <div className="add-area">
+        <input type="text" value={inputSearch} onChange={(e)=>{setInputSearch(e.target.value)}}   onKeyDown={handleKeyDown}/>
+        <button onClick={handleSave} >Save</button>
+      </div>
+
+      <ul className="todo-list">
+       {
+        todos.map((x,index)=>{
+          return(
+          <li key={index}>
+          <div>
+            <input type="checkbox"  checked={todos.done} onClick={()=>{handleCheck(index)}} />
+            {
+              x.done ? <s>{x.title}</s> :x.title
+            }
+          </div>
+          <button onClick={()=>{handleRemove(index)}}>Remove</button>
+        </li>
+)
+        })
+       }
+       </ul>
+     
+
+    </div>
+  )
+}
